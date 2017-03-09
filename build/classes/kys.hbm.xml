@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="com.project.kys.bo.University" table="KYS_UNIVERSITY">
+    	<id name="universityId" column="UNIVERSITY_ID">
+    		<generator class="native"></generator>
+    	</id>
+    	<property name="universityName" column="UNIVERSITY_NAME"></property>
+    	<property name="universityInitials" column="UNIVERSITY_INITIALS"></property>
+    	<property name="universitySummary" column="UNIVERSITY_SUMMARY"></property>
+    	<property name="universityCity" column="UNIVERSITY_CITY"></property>
+    	<property name="universityState" column="UNIVERSITY_STATE"></property>
+    	<property name="universityCountry" column="UNIVERSITY_COUNTRY"></property>
+    </class>
+	
+	<class name="com.project.kys.bo.Discipline" table="KYS_DISCIPLINE">
+    	<id name="mDisciplineId" column="DISCIPLINE_ID">
+    		<generator class="native"></generator>
+    	</id>
+    	<property name="mDisciplineName" column="DISCIPLINE_NAME"></property>
+    	<property name="mDisciplineInitials" column="DISCIPLINE_INITIALS"></property>
+    	<property name="mDisciplineSummary" column="DISCIPLINE_SUMMARY"></property>
+    	<many-to-one name="mUniversity" class="com.project.kys.bo.University" column="UNIVERSITY_ID" fetch="join"></many-to-one>
+    </class>
+    
+    <class name="com.project.kys.bo.Department" table="KYS_DEPARTMENT">
+    	<id name="mDepartmentId" column="DEPARTMENT_ID">
+    		<generator class="native"></generator>
+    	</id>
+    	<property name="mDepartmentName" column="DEPARTMENT_NAME"></property>
+    	<property name="mDepartmentInitials" column="DEPARTMENT_INITIALS"></property>
+    	<property name="mDepartmentSummary" column="DEPARTMENT_SUMMARY"></property>
+    	<many-to-one name="mDiscipline" class="com.project.kys.bo.Discipline" column="DISCIPLINE_ID" fetch="join">
+    	</many-to-one>
+    </class>
+    
+    <class name="com.project.kys.bo.Major" table="KYS_MAJOR">
+    	<id name="mMajorId" column="MAJOR_ID">
+    		<generator class="native"></generator>
+    	</id>
+    	<property name="mMajorName" column="MAJOR_NAME"></property>
+    	<property name="mMajorInitials" column="MAJOR_INITIALS"></property>
+    	<property name="mMajorSummary" column="MAJOR_SUMMARY"></property>
+    	<many-to-one name="mDepartment" class="com.project.kys.bo.Department" column="DEPARTMENT_ID" fetch="join">
+    	</many-to-one>
+    </class>
+    
+     <class name="com.project.kys.bo.Professor" table="KYS_PROFESSOR">
+    	<id name="mProfessorId" column="professor_id">
+    		<generator class="native"></generator>
+    	</id>
+  		<property name="mName" column="name"></property>
+  		<property name="mEmail" column="email"></property>
+		<property name="mContact" column="contact"></property>
+		<property name="mUrl" column="url"></property>
+		<bag name="mCourseList" table="KYS_PROFESSOR_COURSE" inverse="false"  fetch="select">
+			<key column="professor_id"></key>
+			<many-to-many column="course_id" class="com.project.kys.bo.Course"></many-to-many>
+		</bag>
+    </class>
+    
+   <class name="com.project.kys.bo.Course" table="KYS_COURSE">
+    	<id name="mCourseId" column="course_id">
+    		<generator class="native"></generator>
+    	</id>
+    	<property name="mCourseName" column="course_name"></property>
+  		<property name="mCourseInitials" column="course_initials"></property>
+  		<property name="mCourseCode" column="course_code"></property>
+  		<property name="mCourseSummary" column="course_summary"></property>
+		<property name="mFeedbackCount" column="no_of_feedback"></property>
+		<property name="mRating" column="course_rating"></property>
+		<many-to-one name="mMajor" class="com.project.kys.bo.Major" column="major_id"></many-to-one>
+		<bag name="mProfessorList" table="KYS_PROFESSOR_COURSE" inverse="false" fetch="select">
+			<key column="course_id"></key>
+			<many-to-many column="professor_id" class="com.project.kys.bo.Professor"></many-to-many>
+		</bag>
+    </class>
+    
+    <class name="com.project.kys.bo.User" table="KYS_USER">
+    	<id name="mUserId" column="user_id">
+    		<generator class="native"></generator>
+    	</id>
+  		<property name="mPassword" column="password"></property>
+  		<property name="mEmailId" column="email_id"></property>
+		<property name="mFirstName" column="first_name"></property>
+		<property name="mLastName" column="last_name"></property>
+		<property name="mSecurityQuestion" column="security_question"></property>
+		<property name="mSecurityAnswer" column="security_answer"></property>
+		<property name="mDob" column="date_of_birth"></property>
+		<property name="mContact" column="contact"></property>
+		<property name="mIsAdmin" column="is_admin" type="yes_no"></property>
+		<property name="mZipCode" column="zipcode"></property>
+		<property name="mCreationDate" column="creation_date"></property>
+		<many-to-one name="mDepartment" class="com.project.kys.bo.Department" column="department_id" fetch="join"></many-to-one>
+    </class>
+    
+    <class name="com.project.kys.bo.Feedback" table="KYS_FEEDBACK">
+    	<id name="mFeedbackId" column="feedback_id">
+    		<generator class="native"></generator>
+    	</id>
+    	<property name="mTitle" column="title"></property>
+    	<property name="mComment" column="comment"></property>
+    	<property name="mRating" column="rating"></property>
+    	<property name="mDate" column="creation_date"></property>
+    	<property name="mHelpfulnessCount" column="helpful_count"></property>
+    	<property name="mUnhelpfulnessCount" column="unhelpful_count"></property>
+    	<property name="mIsSpam" column="is_spam" type="yes_no"></property>
+    	<property name="mIsAnonymous" column="is_anonymous" type="yes_no"></property>
+    	<many-to-one name="mUser" class="com.project.kys.bo.User" column="user_id" fetch="join"></many-to-one>
+    	<many-to-one name="mProfessor" class="com.project.kys.bo.Professor" column="professor_id" fetch="join"></many-to-one>
+    	<many-to-one name="mCourse" class="com.project.kys.bo.Course" column="course_id" fetch="join"></many-to-one>
+    </class>
+    
+    
+</hibernate-mapping>
